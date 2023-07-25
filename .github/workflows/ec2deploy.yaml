@@ -3,10 +3,6 @@ on:
   push:
     branches:
       - main
-env:
-  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-  DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-  AWS_PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY }}
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -22,3 +18,9 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Push images
         run: docker-compose push
+      - name: Run images
+        run: |
+          echo "${{ secrets.AWS_PRIVATE_KEY }}" > KeyPair.pem
+          chmod 400 KeyPair.pem
+          ssh -o StrictHostKeyChecking=no -i "KeyPair.pem" ec2-user@ec2-18-116-212-34.us-east-2.compute.amazonaws.com 'docker-compose pull'
+          ssh -o StrictHostKeyChecking=no -i "KeyPair.pem" ec2-user@ec2-18-116-212-34.us-east-2.compute.amazonaws.com 'docker-compose up -d'
