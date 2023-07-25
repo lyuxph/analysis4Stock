@@ -20,7 +20,7 @@ class VersionComponent extends React.Component {
   render() {
     return (
       <div>
-        <h1 className="text-center">Version: {this.state.version}</h1>
+        <h1 className="text-center">Ver: {this.state.version}</h1>
       </div>
     )
   }
