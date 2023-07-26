@@ -1,4 +1,4 @@
-package com.lyuxph.analysis.version;
+package com.lyuxph.analysis.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
