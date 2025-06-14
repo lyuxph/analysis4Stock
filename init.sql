@@ -6,5 +6,4 @@ CREATE TABLE version (
     PRIMARY KEY(Version_Id)
 );
 INSERT version(Version_Id)
-VALUES ('1.3');
-
+VALUES ('1.0.0');
