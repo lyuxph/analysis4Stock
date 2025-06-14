@@ -17,10 +17,10 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Push images
-        run: docker-compose push
+        run: docker compose push
       - name: Deploy images
         run: |
           echo "${{ secrets.AWS_PRIVATE_KEY }}" > KeyPair.pem
           chmod 400 KeyPair.pem
-          ssh -o StrictHostKeyChecking=no -i "KeyPair.pem" ec2-user@ec2-18-116-212-34.us-east-2.compute.amazonaws.com 'docker-compose pull'
-          ssh -o StrictHostKeyChecking=no -i "KeyPair.pem" ec2-user@ec2-18-116-212-34.us-east-2.compute.amazonaws.com 'docker-compose up -d'
+          ssh -o StrictHostKeyChecking=no -i "KeyPair.pem" ec2-user@ec2-18-116-212-34.us-east-2.compute.amazonaws.com 'docker compose pull'
+          ssh -o StrictHostKeyChecking=no -i "KeyPair.pem" ec2-user@ec2-18-116-212-34.us-east-2.compute.amazonaws.com 'docker compose up -d'
