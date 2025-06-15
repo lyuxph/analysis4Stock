@@ -21,6 +21,7 @@ class VersionComponent extends React.Component {
     return (
       <div>
         <h1 className="text-center">Version: {this.state.version}</h1>
+        <h5 className="text-center">“The best way to predict the future is to invent it.” – Alan Kay</h5>
       </div>
     )
   }
