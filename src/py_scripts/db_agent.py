@@ -13,10 +13,11 @@ from langchain.chains.sql_database.query import create_sql_query_chain
 import os
 
 from flask import Flask
+from flask import request
 
 app = Flask(__name__)
 
-@app.route('/')
+@app.route('/db_agent')
 def call_db():
     os.environ['OPENAI_API_KEY'] = os.getenv("OPENAI_API_KEY")
     DB_USER = "root"
@@ -30,7 +31,8 @@ def call_db():
 
     chain = create_sql_query_chain(llm, db)
 
-    res = chain.invoke({"question": "what is version?"})
+    question = request.args.get('question')
+    res = chain.invoke({"question": question})
 
     return res
 
