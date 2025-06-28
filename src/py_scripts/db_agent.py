@@ -9,6 +9,7 @@ Created on Sat Jun 21 09:58:46 2025
 from langchain_openai import ChatOpenAI
 from langchain.utilities import SQLDatabase
 from langchain.chains.sql_database.query import create_sql_query_chain
+from langchain_community.tools.sql_database.tool import QuerySQLDatabaseTool
 
 import os
 
@@ -29,7 +30,9 @@ def call_db():
 
     llm = ChatOpenAI(temperature=0)
 
-    chain = create_sql_query_chain(llm, db)
+    execute_query = QuerySQLDatabaseTool(db=db)
+    write_query = create_sql_query_chain(llm, db)
+    chain = write_query | execute_query
 
     question = request.args.get('question')
     res = chain.invoke({"question": question})
