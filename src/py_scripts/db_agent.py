@@ -10,6 +10,10 @@ from langchain_openai import ChatOpenAI
 from langchain.utilities import SQLDatabase
 from langchain.chains.sql_database.query import create_sql_query_chain
 from langchain_community.tools.sql_database.tool import QuerySQLDatabaseTool
+from langchain_core.prompts import PromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+from langchain.chains import LLMChain
+
 
 import os
 
@@ -31,13 +35,33 @@ def call_db():
     llm = ChatOpenAI(temperature=0)
 
     execute_query = QuerySQLDatabaseTool(db=db)
+
     write_query = create_sql_query_chain(llm, db)
-    chain = write_query | execute_query
+
+    answer_prompt = PromptTemplate.from_template("""
+    You are an analyst writing for business readers.
+
+    **Question**
+    {question}
+
+    **Raw Data**
+    {data}
+
+    **Write an answer** (1–2 short sentences, plain English):
+    """)
+
+    english_chain = LLMChain(
+    llm=llm,
+    prompt=answer_prompt,
+    output_parser=StrOutputParser() # returns a clean string
+    )
+
+    sql_chain = write_query | execute_query
 
     question = request.args.get('question')
-    res = chain.invoke({"question": question})
-
-    return res
+    res = sql_chain.invoke({"question": question})
+    ans = english_chain.invoke({"question": question, "data": res})
+    return ans
 
 
 if __name__ == '__main__':
